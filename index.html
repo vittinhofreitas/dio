@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Custos e Projeções - Olimpíadas Acadêmicas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" type="imagex/png"
+        href="https://www.diocesano.g12.br/wp-content/uploads/2024/02/cropped-favicon-diocesano-32x32.png">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            /* bg-gray-100 */
+        }
+
+        .kpi-card {
+            background-color: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            border-left: 5px solid #800000;
+            /* Vermelho Vinho */
+        }
+
+        .main-card {
+            background-color: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        .olympiad-list-item {
+            cursor: pointer;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.2s, color 0.2s;
+            border: 1px solid #e5e7eb;
+        }
+
+        .olympiad-list-item:hover {
+            background-color: #fce8e8;
+        }
+
+        .olympiad-list-item.active {
+            background-color: #800000;
+            color: white;
+            font-weight: 600;
+            border-color: #800000;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            border: 1px solid #d1d5db;
+            color: #111827;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: background-color 0.2s;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background-color: #800000;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #660000;
+        }
+
+        .btn-secondary {
+            background-color: #e5e7eb;
+            color: #1f2937;
+        }
+
+        .btn-secondary:hover {
+            background-color: #d1d5db;
+        }
+
+        .btn-danger {
+            background-color: #dc2626;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #b91c1c;
+        }
+    </style>
+</head>
+
+<body class="text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8">
+
+        <!-- Cabeçalho -->
+        <header class="mb-10 flex flex-col sm:flex-row items-center justify-between px-4 py-3 border-b border-gray-200">
+            <!-- Logo -->
+            <div class="flex items-center justify-start w-full sm:w-auto">
+                <img src="https://www.diocesano.g12.br/wp-content/uploads/2023/12/logo-diocesano.png"
+                    alt="logo-diocesano" class="h-10 sm:h-12">
+            </div>
+
+            <div class="flex flex-col items-center text-center flex-grow">
+                <h1 class="text-2xl sm:text-3xl font-bold text-[#800000] leading-snug">
+                    Painel de Custos e Projeções
+                </h1>
+                <p class="text-sm sm:text-base text-gray-600">
+                    Olimpíadas Acadêmicas - Colégio Diocesano
+                </p>
+            </div>
+
+            <div class="flex flex-wrap justify-end gap-2 sm:gap-3 text-xs sm:text-sm w-full sm:w-auto mt-4 sm:mt-0">
+                <a href="./calculadora.html"
+                    class="px-3 py-1.5 rounded-md border border-[#800000] text-[#800000] hover:bg-[#800000]/10 transition">
+                    Calculadora
+                </a>
+                <button id="import-btn"
+                    class="px-3 py-1.5 rounded-md border border-gray-400 text-gray-700 hover:bg-gray-100 transition">
+                    Importar
+                </button>
+                <input type="file" id="import-file" class="hidden" accept=".json">
+                <button id="export-btn"
+                    class="px-3 py-1.5 rounded-md border border-gray-400 text-gray-700 hover:bg-gray-100 transition">
+                    Exportar
+                </button>
+                <button id="reset-data-btn"
+                    class="px-3 py-1.5 rounded-md border border-red-500 text-red-600 hover:bg-red-50 transition">
+                    Resetar
+                </button>
+            </div>
+        </header>
+
+
+
+
+        <!-- KPIs / Indicadores Principais -->
+        <section class="grid md:grid-cols-4 gap-6 mb-8">
+            <div class="kpi-card">
+                <h2 class="text-sm font-medium text-gray-500 uppercase">Custo Total 2025</h2>
+                <p id="total-cost-kpi" class="text-3xl font-bold mt-1">R$ 0,00</p>
+            </div>
+            <div class="kpi-card">
+                <h2 class="text-sm font-medium text-gray-500 uppercase">Total de Inscrições</h2>
+                <p id="total-inscriptions-kpi" class="text-3xl font-bold mt-1">0</p>
+            </div>
+            <div class="kpi-card">
+                <h2 class="text-sm font-medium text-gray-500 uppercase">Nº de Alunos Únicos (Real)</h2>
+                <input type="number" id="unique-students-input"
+                    class="text-3xl font-bold mt-1 w-full border-gray-200 rounded-md focus:ring-[#800000] focus:border-[#800000]"
+                    placeholder="Insira o valor">
+            </div>
+            <div class="kpi-card">
+                <h2 class="text-sm font-medium text-gray-500 uppercase">Custo Médio por Aluno</h2>
+                <p id="avg-cost-kpi" class="text-3xl font-bold mt-1">R$ 0,00</p>
+            </div>
+        </section>
+
+        <!-- Seção de Gerenciamento -->
+        <section id="management-section" class="main-card mb-8">
+            <h3 class="text-xl font-bold mb-4">Gerenciamento de Dados</h3>
+            <form id="olympiad-form" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <input type="hidden" id="edit-id">
+                <div>
+                    <label for="name" class="block text-sm font-medium mb-1">Nome da Olimpíada</label>
+                    <input type="text" id="name" class="form-input" required>
+                </div>
+                <div>
+                    <label for="students" class="block text-sm font-medium mb-1">Nº de Inscrições</label>
+                    <input type="number" id="students" class="form-input" required min="0">
+                </div>
+                <div>
+                    <label for="inscriptions" class="block text-sm font-medium mb-1">Custo: Inscrições (R$)</label>
+                    <input type="number" id="inscriptions" class="form-input" required min="0" value="0" step="0.01">
+                </div>
+                <div>
+                    <label for="extraClasses" class="block text-sm font-medium mb-1">Custo Fixo: Aulas Extras
+                        (R$)</label>
+                    <input type="number" id="extraClasses" class="form-input" required min="0" value="0" step="0.01">
+                </div>
+                <div>
+                    <label for="materials" class="block text-sm font-medium mb-1">Custo Fixo: Materiais (R$)</label>
+                    <input type="number" id="materials" class="form-input" required min="0" value="0" step="0.01">
+                </div>
+                <div>
+                    <label for="travel" class="block text-sm font-medium mb-1">Custo Fixo: Viagens/Logística
+                        (R$)</label>
+                    <input type="number" id="travel" class="form-input" required min="0" value="0" step="0.01">
+                </div>
+                <div class="md:col-span-2 lg:col-span-3 flex items-center gap-4 mt-4">
+                    <button type="submit" id="save-btn" class="btn btn-primary">Salvar Nova Olimpíada</button>
+                    <button type="button" id="clear-btn" class="btn btn-secondary">Limpar Formulário</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Análise Detalhada -->
+        <section class="grid lg:grid-cols-3 gap-8 mb-8">
+            <!-- Lista de Olimpíadas -->
+            <div class="lg:col-span-1 main-card">
+                <h3 class="text-xl font-bold mb-4">Detalhamento Individual de Gastos</h3>
+                <div id="olympiad-list" class="space-y-2 max-h-[600px] overflow-y-auto pr-2">
+                    <!-- A lista será populada via JS -->
+                </div>
+            </div>
+
+            <!-- Detalhes da Olimpíada Selecionada -->
+            <div class="lg:col-span-2 main-card">
+                <h3 id="details-title" class="text-2xl font-bold mb-4 text-[#800000]">Visão Geral</h3>
+                <div id="details-content">
+                    <div id="details-view" class="grid md:grid-cols-2 gap-6 hidden">
+                        <div id="details-text" class="space-y-4">
+                            <!-- Detalhes em texto populados via JS -->
+                        </div>
+                        <div>
+                            <canvas id="details-chart"></canvas>
+                        </div>
+                        <div id="details-actions" class="md:col-span-2 flex flex-wrap gap-4 mt-4">
+                            <!-- Botões de ação populados via JS -->
+                        </div>
+                    </div>
+                    <p id="details-placeholder" class="text-center text-gray-500 mt-8">Selecione uma olimpíada na lista
+                        para ver os detalhes.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gráfico Comparativo Geral -->
+        <section class="main-card mb-8">
+            <h3 class="text-xl font-bold mb-4">Comparativo de Custos por Olimpíada (2025)</h3>
+            <canvas id="main-bar-chart" height="120"></canvas>
+        </section>
+
+        <!-- Ferramenta de Projeção -->
+        <section class="main-card bg-[#800000] text-white">
+            <h3 class="text-2xl font-bold mb-4">Projeção de Orçamento para 2026</h3>
+            <div class="grid md:grid-cols-3 gap-6 items-center">
+                <div class="space-y-4">
+                    <div>
+                        <label for="student-increase" class="block font-medium mb-1">Aumento previsto de alunos
+                            (%)</label>
+                        <input type="number" id="student-increase" value="10" class="w-full p-2 rounded text-gray-800">
+                    </div>
+                    <div>
+                        <label for="inflation-rate" class="block font-medium mb-1">Taxa de inflação prevista (%)</label>
+                        <input type="number" id="inflation-rate" value="5" class="w-full p-2 rounded text-gray-800">
+                    </div>
+                </div>
+                <div class="text-center">
+                    <button id="calculate-projection"
+                        class="bg-white text-[#800000] font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-gray-200 transition">
+                        Calcular Projeção
+                    </button>
+                </div>
+                <div class="text-center bg-white/20 p-6 rounded-lg">
+                    <h4 class="text-lg font-semibold uppercase">Custo Total Projetado</h4>
+                    <p id="projected-cost" class="text-4xl font-black mt-2">R$ 0,00</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // --- DADOS INICIAIS (ATUALIZADOS COM BASE NO CADERNO DE ORIENTAÇÕES) ---
+        const initialData = [
+            // Dados previamente inseridos, agora com informações do caderno
+            { id: 'canguru', name: 'Olimpíada Canguru de Matemática', students: 150, costs: { inscriptions: 787.00, extraClasses: 1500, materials: 1614.28, travel: 0 }, inscriptionPeriod: 'Não informado', costType: 'Paga' },
+            { id: 'oba', name: 'Olimpíada Brasileira de Astronomia (OBA)', students: 80, costs: { inscriptions: 0, extraClasses: 2500, materials: 800, travel: 0 }, inscriptionPeriod: 'Até 01/05/2025', costType: 'Paga' },
+            { id: 'obafog', name: 'Olimpíada Brasileira de Foguetes (OBAFOG)', students: 30, costs: { inscriptions: 0, extraClasses: 1000, materials: 1500, travel: 0 }, inscriptionPeriod: 'Até 01/05/2025', costType: 'Paga' },
+            { id: 'obr', name: 'Olimpíada Brasileira de Robótica (OBR)', students: 12, costs: { inscriptions: 600, extraClasses: 3000, materials: 2500, travel: 5000 }, inscriptionPeriod: 'Não informado', costType: 'Paga' },
+            { id: 'obmep', name: 'Olimpíada Brasileira de Matemática (OBMEP)', students: 519, costs: { inscriptions: 2295.75, extraClasses: 4000, materials: 200, travel: 0 }, inscriptionPeriod: 'Não informado', costType: 'Paga' },
+            { id: 'onc', name: 'Olimpíada Nacional de Ciências (ONC)', students: 60, costs: { inscriptions: 0, extraClasses: 2200, materials: 400, travel: 0 }, inscriptionPeriod: '01/05 a 12/08/2025', costType: 'Gratuita' },
+            { id: 'op', name: 'Olimpíada de Português (OP)', students: 100, costs: { inscriptions: 2190.00, extraClasses: 1800, materials: 150, travel: 0 }, inscriptionPeriod: 'Não informado', costType: 'Paga' },
+            { id: 'obmep_mirim', name: 'Olimpíada Brasileira de Matemática Mirim', students: 186, costs: { inscriptions: 950.00, extraClasses: 1200, materials: 100, travel: 0 }, inscriptionPeriod: 'Não informado', costType: 'Paga' },
+
+            // Novos dados do caderno de orientações (com custos zerados para preenchimento)
+            { id: 'obb', name: 'Olimpíada Brasileira de Biologia (OBB)', students: 0, costs: { inscriptions: 0, extraClasses: 0, materials: 0, travel: 0 }, inscriptionPeriod: '27/01 a 27/02/2025', costType: 'Gratuita' },
+            { id: 'tfm', name: 'Torneio de Física para Meninas (TFM)', students: 0, costs: { inscriptions: 0, extraClasses: 0, materials: 0, travel: 0 }, inscriptionPeriod: 'A partir de 09/05/2025', costType: 'Gratuita' },
+            { id: 'obq', name: 'Olimpíada Brasileira de Química (OBQ/OPQ)', students: 0, costs: { inscriptions: 0, extraClasses: 0, materials: 0, travel: 0 }, inscriptionPeriod: 'Agosto/Setembro 2025', costType: 'Gratuita' },
+            { id: 'obf', name: 'Olimpíada Brasileira de Física (OBF)', students: 0, costs: { inscriptions: 0, extraClasses: 0, materials: 0, travel: 0 }, inscriptionPeriod: 'Abril a Junho 2025', costType: 'Paga' },
+        ];
+        // --- FIM DOS DADOS INICIAIS ---
+
+        let olympiadData = [];
+        let detailsChartInstance = null;
+        let mainBarChartInstance = null;
+
+        // --- FUNÇÕES DE DADOS ---
+        const loadData = () => {
+            const savedOlympiadData = localStorage.getItem('diocesanoOlympiadCosts');
+            olympiadData = savedOlympiadData ? JSON.parse(savedOlympiadData) : JSON.parse(JSON.stringify(initialData));
+
+            const savedUniqueStudents = localStorage.getItem('diocesanoUniqueStudents');
+            document.getElementById('unique-students-input').value = savedUniqueStudents || '';
+        };
+        const saveData = () => {
+            localStorage.setItem('diocesanoOlympiadCosts', JSON.stringify(olympiadData));
+            localStorage.setItem('diocesanoUniqueStudents', document.getElementById('unique-students-input').value);
+        };
+
+        const formatCurrency = (value) => value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+        // --- FUNÇÕES DE RENDERIZAÇÃO ---
+        const refreshDashboard = () => {
+            olympiadData.forEach(item => {
+                const costs = item.costs || {};
+                item.totalCost = (costs.inscriptions || 0) + (costs.extraClasses || 0) + (costs.materials || 0) + (costs.travel || 0);
+            });
+            calculateTotals();
+            renderOlympiadList();
+            renderMainBarChart();
+            clearDetails();
+            calculateProjection();
+        };
+
+        const calculateTotals = () => {
+            const totalCost = olympiadData.reduce((sum, item) => sum + (item.totalCost || 0), 0);
+            const totalInscriptions = olympiadData.reduce((sum, item) => sum + (item.students || 0), 0);
+
+            const uniqueStudentsInput = document.getElementById('unique-students-input');
+            const uniqueStudents = parseInt(uniqueStudentsInput.value) || 0;
+
+            const avgCostPerStudent = uniqueStudents > 0 ? totalCost / uniqueStudents : 0;
+
+            document.getElementById('total-cost-kpi').textContent = formatCurrency(totalCost);
+            document.getElementById('total-inscriptions-kpi').textContent = totalInscriptions;
+            document.getElementById('avg-cost-kpi').textContent = formatCurrency(avgCostPerStudent);
+        };
+
+        const renderOlympiadList = () => {
+            const listElement = document.getElementById('olympiad-list');
+            listElement.innerHTML = '';
+            if (olympiadData.length === 0) {
+                listElement.innerHTML = '<p class="text-gray-500">Nenhuma olimpíada cadastrada.</p>';
+                return;
+            }
+            olympiadData.sort((a, b) => a.name.localeCompare(b.name)).forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'olympiad-list-item';
+                div.textContent = item.name;
+                div.dataset.id = item.id;
+                div.onclick = () => showDetails(item.id);
+                listElement.appendChild(div);
+            });
+        };
+
+        const renderMainBarChart = () => {
+            const ctx = document.getElementById('main-bar-chart').getContext('2d');
+            const sortedData = [...olympiadData].sort((a, b) => b.totalCost - a.totalCost);
+
+            if (mainBarChartInstance) mainBarChartInstance.destroy();
+            mainBarChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: sortedData.map(item => item.name),
+                    datasets: [{
+                        label: 'Custo Total (R$)',
+                        data: sortedData.map(item => item.totalCost),
+                        backgroundColor: '#800000',
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: { x: { beginAtZero: true } }
+                }
+            });
+        };
+
+        // --- FUNÇÕES DE DETALHES ---
+        const clearDetails = () => {
+            document.getElementById('details-view').classList.add('hidden');
+            document.getElementById('details-placeholder').classList.remove('hidden');
+            document.querySelectorAll('.olympiad-list-item').forEach(item => item.classList.remove('active'));
+        };
+
+        const showDetails = (olympiadId) => {
+            document.querySelectorAll('.olympiad-list-item').forEach(item => {
+                item.classList.toggle('active', item.dataset.id === olympiadId);
+            });
+
+            const data = olympiadData.find(item => item.id === olympiadId);
+            if (!data) return;
+
+            const costs = data.costs || {};
+            const inscriptions = costs.inscriptions || 0;
+            const extraClasses = costs.extraClasses || 0;
+            const materials = costs.materials || 0;
+            const travel = costs.travel || 0;
+
+
+            document.getElementById('details-placeholder').classList.add('hidden');
+            document.getElementById('details-view').classList.remove('hidden');
+            document.getElementById('details-title').textContent = data.name;
+
+            document.getElementById('details-text').innerHTML = `
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <p class="text-sm text-gray-500">Custo Total</p>
+                    <p class="text-2xl font-bold">${formatCurrency(data.totalCost)}</p>
+                </div>
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <p class="text-sm text-gray-500">Nº de Inscrições</p>
+                    <p class="text-2xl font-bold">${data.students}</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-2">Detalhamento dos Custos:</h4>
+                    <ul class="list-disc list-inside space-y-1 text-gray-600">
+                        <li>Inscrições: ${formatCurrency(inscriptions)}</li>
+                        <li>Aulas Extras: ${formatCurrency(extraClasses)}</li>
+                        <li>Materiais: ${formatCurrency(materials)}</li>
+                        <li>Viagens/Logística: ${formatCurrency(travel)}</li>
+                    </ul>
+                </div>
+            `;
+
+            document.getElementById('details-actions').innerHTML = `
+                <button onclick="populateFormForEdit('${olympiadId}')" class="btn btn-secondary">Editar Resumo</button>
+                <a href="./calculadora.html?id=${olympiadId}" class="btn btn-primary">Detalhar Custos na Calculadora</a>
+                <button id="delete-btn" onclick="handleDelete('${olympiadId}')" class="btn btn-danger">Excluir Olimpíada</button>
+            `;
+
+            const ctx = document.getElementById('details-chart').getContext('2d');
+            if (detailsChartInstance) detailsChartInstance.destroy();
+            detailsChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Inscrições', 'Aulas Extras', 'Materiais', 'Viagens'],
+                    datasets: [{
+                        data: [inscriptions, extraClasses, materials, travel],
+                        backgroundColor: ['#800000', '#a13333', '#c26666', '#e39999'],
+                        borderColor: '#ffffff',
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { position: 'bottom' }, title: { display: true, text: 'Distribuição de Custos' } }
+                }
+            });
+        };
+
+        // --- FUNÇÕES DO FORMULÁRIO (CRUD) ---
+        const clearForm = () => {
+            document.getElementById('olympiad-form').reset();
+            document.getElementById('edit-id').value = '';
+            document.getElementById('save-btn').textContent = 'Salvar Nova Olimpíada';
+        };
+
+        const handleFormSubmit = (event) => {
+            event.preventDefault();
+            const editingId = document.getElementById('edit-id').value;
+
+            const baseData = initialData.find(item => item.id === editingId) || {};
+
+            const formData = {
+                id: editingId || 'id_' + new Date().getTime(),
+                name: document.getElementById('name').value,
+                students: parseInt(document.getElementById('students').value),
+                costs: {
+                    inscriptions: parseFloat(document.getElementById('inscriptions').value),
+                    extraClasses: parseFloat(document.getElementById('extraClasses').value),
+                    materials: parseFloat(document.getElementById('materials').value),
+                    travel: parseFloat(document.getElementById('travel').value),
+                },
+                inscriptionPeriod: baseData.inscriptionPeriod || 'Não informado',
+                costType: baseData.costType || 'Não informado',
+            };
+
+            if (editingId) { // Atualiza
+                const index = olympiadData.findIndex(item => item.id === editingId);
+                // Mantém o detailedBreakdown se já existir
+                formData.detailedBreakdown = olympiadData[index].detailedBreakdown;
+                olympiadData[index] = formData;
+            } else { // Adiciona
+                olympiadData.push(formData);
+            }
+
+            saveData();
+            refreshDashboard();
+            clearForm();
+        };
+
+        const populateFormForEdit = (olympiadId) => {
+            const data = olympiadData.find(item => item.id === olympiadId);
+            if (!data) return;
+
+            const costs = data.costs || {};
+
+            document.getElementById('edit-id').value = data.id;
+            document.getElementById('name').value = data.name;
+            document.getElementById('students').value = data.students;
+            document.getElementById('inscriptions').value = costs.inscriptions || 0;
+            document.getElementById('extraClasses').value = costs.extraClasses || 0;
+            document.getElementById('materials').value = costs.materials || 0;
+            document.getElementById('travel').value = costs.travel || 0;
+
+            document.getElementById('save-btn').textContent = 'Salvar Alterações';
+            document.getElementById('management-section').scrollIntoView({ behavior: 'smooth' });
+        };
+
+        const handleDelete = (olympiadId) => {
+            const deleteBtn = document.getElementById('delete-btn');
+            if (deleteBtn.dataset.confirming) {
+                olympiadData = olympiadData.filter(item => item.id !== olympiadId);
+                saveData();
+                refreshDashboard();
+            } else {
+                deleteBtn.textContent = 'Clique para confirmar a exclusão';
+                deleteBtn.dataset.confirming = 'true';
+                setTimeout(() => {
+                    if (document.body.contains(deleteBtn) && deleteBtn.dataset.confirming) {
+                        deleteBtn.textContent = 'Excluir Olimpíada';
+                        deleteBtn.removeAttribute('data-confirming');
+                    }
+                }, 3000);
+            }
+        };
+
+        // --- FUNÇÕES DE IMPORTAÇÃO E EXPORTAÇÃO ---
+        const exportData = () => {
+            const dataToExport = {
+                olympiadData: JSON.parse(localStorage.getItem('diocesanoOlympiadCosts') || 'null'),
+                uniqueStudents: localStorage.getItem('diocesanoUniqueStudents') || ''
+            };
+
+            if (!dataToExport.olympiadData) {
+                const exportBtn = document.getElementById('export-btn');
+                exportBtn.textContent = 'Nenhum dado para exportar';
+                setTimeout(() => {
+                    exportBtn.textContent = 'Exportar Dados';
+                }, 2000);
+                return;
+            }
+
+            const dataStr = JSON.stringify(dataToExport, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `painel_custos_olimpiadas_${new Date().toISOString().slice(0, 10)}.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        };
+
+        // --- FUNÇÃO DE PROJEÇÃO ---
+        const calculateProjection = () => {
+            const studentIncrease = parseFloat(document.getElementById('student-increase').value) / 100 || 0;
+            const inflationRate = parseFloat(document.getElementById('inflation-rate').value) / 100 || 0;
+
+            const currentInscriptionCosts = olympiadData.reduce((sum, item) => sum + (item.costs.inscriptions || 0), 0);
+            const currentOtherCosts = olympiadData.reduce((sum, item) => sum + (item.costs.extraClasses || 0) + (item.costs.materials || 0) + (item.costs.travel || 0), 0);
+
+            const projectedInscriptionCosts = currentInscriptionCosts * (1 + studentIncrease) * (1 + inflationRate);
+            const projectedOtherCosts = currentOtherCosts * (1 + inflationRate);
+
+            const projectedTotal = projectedInscriptionCosts + projectedOtherCosts;
+            document.getElementById('projected-cost').textContent = formatCurrency(projectedTotal);
+        };
+
+        // --- INICIALIZAÇÃO ---
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            refreshDashboard();
+            document.getElementById('olympiad-form').addEventListener('submit', handleFormSubmit);
+            document.getElementById('clear-btn').addEventListener('click', clearForm);
+            document.getElementById('calculate-projection').addEventListener('click', calculateProjection);
+
+            // Listeners de Import/Export
+            const importBtn = document.getElementById('import-btn');
+            const exportBtn = document.getElementById('export-btn');
+            const importFileInput = document.getElementById('import-file');
+
+            importBtn.addEventListener('click', () => importFileInput.click());
+            exportBtn.addEventListener('click', exportData);
+
+            importFileInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const importedData = JSON.parse(e.target.result);
+                        if (importedData && importedData.olympiadData && Array.isArray(importedData.olympiadData)) {
+                            localStorage.setItem('diocesanoOlympiadCosts', JSON.stringify(importedData.olympiadData));
+                            localStorage.setItem('diocesanoUniqueStudents', importedData.uniqueStudents || '');
+                            location.reload();
+                        } else {
+                            throw new Error('Formato de arquivo inválido.');
+                        }
+                    } catch (error) {
+                        console.error('Erro ao importar o arquivo:', error);
+                        importBtn.textContent = 'Arquivo Inválido!';
+                        importBtn.classList.remove('btn-secondary');
+                        importBtn.classList.add('btn-danger');
+                        setTimeout(() => {
+                            importBtn.textContent = 'Importar Dados';
+                            importBtn.classList.add('btn-secondary');
+                            importBtn.classList.remove('btn-danger');
+                        }, 3000);
+                    } finally {
+                        importFileInput.value = '';
+                    }
+                };
+                reader.readAsText(file);
+            });
+
+            document.getElementById('unique-students-input').addEventListener('input', () => {
+                calculateTotals();
+                saveData();
+            });
+
+            document.getElementById('reset-data-btn').addEventListener('click', () => {
+                if (confirm('Você tem certeza que deseja apagar TODOS os dados customizados e restaurar os dados iniciais? Esta ação não pode ser desfeita.')) {
+                    localStorage.removeItem('diocesanoOlympiadCosts');
+                    localStorage.removeItem('diocesanoUniqueStudents');
+                    initialData.forEach(item => {
+                        item.students = item.students || 0;
+                    });
+                    olympiadData = JSON.parse(JSON.stringify(initialData));
+                    saveData();
+                    location.reload();
+                }
+            });
+        });
+
+    </script>
+</body>
+
+</html>
