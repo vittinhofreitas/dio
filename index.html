@@ -104,9 +104,7 @@
 
     <div class="container mx-auto p-4 md:p-8">
 
-        <!-- Cabeçalho -->
         <header class="mb-10 flex flex-col sm:flex-row items-center justify-between px-4 py-3 border-b border-gray-200">
-            <!-- Logo -->
             <div class="flex items-center justify-start w-full sm:w-auto">
                 <img src="https://www.diocesano.g12.br/wp-content/uploads/2023/12/logo-diocesano.png"
                     alt="logo-diocesano" class="h-10 sm:h-12">
@@ -142,10 +140,6 @@
             </div>
         </header>
 
-
-
-
-        <!-- KPIs / Indicadores Principais -->
         <section class="grid md:grid-cols-4 gap-6 mb-8">
             <div class="kpi-card">
                 <h2 class="text-sm font-medium text-gray-500 uppercase">Custo Total 2025</h2>
@@ -167,7 +161,6 @@
             </div>
         </section>
 
-        <!-- Seção de Gerenciamento -->
         <section id="management-section" class="main-card mb-8">
             <h3 class="text-xl font-bold mb-4">Gerenciamento de Dados</h3>
             <form id="olympiad-form" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -205,30 +198,24 @@
             </form>
         </section>
 
-        <!-- Análise Detalhada -->
         <section class="grid lg:grid-cols-3 gap-8 mb-8">
-            <!-- Lista de Olimpíadas -->
             <div class="lg:col-span-1 main-card">
                 <h3 class="text-xl font-bold mb-4">Detalhamento Individual de Gastos</h3>
                 <div id="olympiad-list" class="space-y-2 max-h-[600px] overflow-y-auto pr-2">
-                    <!-- A lista será populada via JS -->
-                </div>
+                    </div>
             </div>
 
-            <!-- Detalhes da Olimpíada Selecionada -->
             <div class="lg:col-span-2 main-card">
                 <h3 id="details-title" class="text-2xl font-bold mb-4 text-[#800000]">Visão Geral</h3>
                 <div id="details-content">
                     <div id="details-view" class="grid md:grid-cols-2 gap-6 hidden">
                         <div id="details-text" class="space-y-4">
-                            <!-- Detalhes em texto populados via JS -->
-                        </div>
+                            </div>
                         <div>
                             <canvas id="details-chart"></canvas>
                         </div>
                         <div id="details-actions" class="md:col-span-2 flex flex-wrap gap-4 mt-4">
-                            <!-- Botões de ação populados via JS -->
-                        </div>
+                            </div>
                     </div>
                     <p id="details-placeholder" class="text-center text-gray-500 mt-8">Selecione uma olimpíada na lista
                         para ver os detalhes.</p>
@@ -236,13 +223,11 @@
             </div>
         </section>
 
-        <!-- Gráfico Comparativo Geral -->
         <section class="main-card mb-8">
             <h3 class="text-xl font-bold mb-4">Comparativo de Custos por Olimpíada (2025)</h3>
             <canvas id="main-bar-chart" height="120"></canvas>
         </section>
 
-        <!-- Ferramenta de Projeção -->
         <section class="main-card bg-[#800000] text-white">
             <h3 class="text-2xl font-bold mb-4">Projeção de Orçamento para 2026</h3>
             <div class="grid md:grid-cols-3 gap-6 items-center">
@@ -272,23 +257,25 @@
     </div>
 
     <script>
-        // --- DADOS INICIAIS (ATUALIZADOS COM BASE NO CADERNO DE ORIENTAÇÕES) ---
+        // --- DADOS INICIAIS (ATUALIZADOS COM BASE NO ARQUIVO JSON) ---
+        const initialUniqueStudents = "663";
         const initialData = [
-            // Dados previamente inseridos, agora com informações do caderno
-            { id: 'canguru', name: 'Olimpíada Canguru de Matemática', students: 150, costs: { inscriptions: 787.00, extraClasses: 1500, materials: 1614.28, travel: 0 }, inscriptionPeriod: 'Não informado', costType: 'Paga' },
-            { id: 'oba', name: 'Olimpíada Brasileira de Astronomia (OBA)', students: 80, costs: { inscriptions: 0, extraClasses: 2500, materials: 800, travel: 0 }, inscriptionPeriod: 'Até 01/05/2025', costType: 'Paga' },
-            { id: 'obafog', name: 'Olimpíada Brasileira de Foguetes (OBAFOG)', students: 30, costs: { inscriptions: 0, extraClasses: 1000, materials: 1500, travel: 0 }, inscriptionPeriod: 'Até 01/05/2025', costType: 'Paga' },
-            { id: 'obr', name: 'Olimpíada Brasileira de Robótica (OBR)', students: 12, costs: { inscriptions: 600, extraClasses: 3000, materials: 2500, travel: 5000 }, inscriptionPeriod: 'Não informado', costType: 'Paga' },
-            { id: 'obmep', name: 'Olimpíada Brasileira de Matemática (OBMEP)', students: 519, costs: { inscriptions: 2295.75, extraClasses: 4000, materials: 200, travel: 0 }, inscriptionPeriod: 'Não informado', costType: 'Paga' },
-            { id: 'onc', name: 'Olimpíada Nacional de Ciências (ONC)', students: 60, costs: { inscriptions: 0, extraClasses: 2200, materials: 400, travel: 0 }, inscriptionPeriod: '01/05 a 12/08/2025', costType: 'Gratuita' },
-            { id: 'op', name: 'Olimpíada de Português (OP)', students: 100, costs: { inscriptions: 2190.00, extraClasses: 1800, materials: 150, travel: 0 }, inscriptionPeriod: 'Não informado', costType: 'Paga' },
-            { id: 'obmep_mirim', name: 'Olimpíada Brasileira de Matemática Mirim', students: 186, costs: { inscriptions: 950.00, extraClasses: 1200, materials: 100, travel: 0 }, inscriptionPeriod: 'Não informado', costType: 'Paga' },
-
-            // Novos dados do caderno de orientações (com custos zerados para preenchimento)
-            { id: 'obb', name: 'Olimpíada Brasileira de Biologia (OBB)', students: 0, costs: { inscriptions: 0, extraClasses: 0, materials: 0, travel: 0 }, inscriptionPeriod: '27/01 a 27/02/2025', costType: 'Gratuita' },
-            { id: 'tfm', name: 'Torneio de Física para Meninas (TFM)', students: 0, costs: { inscriptions: 0, extraClasses: 0, materials: 0, travel: 0 }, inscriptionPeriod: 'A partir de 09/05/2025', costType: 'Gratuita' },
-            { id: 'obq', name: 'Olimpíada Brasileira de Química (OBQ/OPQ)', students: 0, costs: { inscriptions: 0, extraClasses: 0, materials: 0, travel: 0 }, inscriptionPeriod: 'Agosto/Setembro 2025', costType: 'Gratuita' },
-            { id: 'obf', name: 'Olimpíada Brasileira de Física (OBF)', students: 0, costs: { inscriptions: 0, extraClasses: 0, materials: 0, travel: 0 }, inscriptionPeriod: 'Abril a Junho 2025', costType: 'Paga' },
+            { "id": "id_1759331109402", "name": "Concurso Canguru de Matemática", "students": 663, "costs": { "inscriptions": 787, "extraClasses": 0, "materials": 1935.1999999999998, "travel": 0 }, "totalCost": 2722.2, "detailedBreakdown": { "general": { "professors": 0, "hours": 0, "hourRate": 0, "tickets": 0, "lodging": 0, "travelFood": 0 }, "materials": { "medalsCost": 1614.28, "trophiesCost": 0 }, "levels": [{ "name": "B", "students": 144, "phases": [{ "students": 144, "pages": 6, "pageCost": 0.08, "snacksQty": 0 }] }, { "name": "C", "students": 92, "phases": [{ "students": 92, "pages": 6, "pageCost": 0.08, "snacksQty": 0 }] }, { "name": "E", "students": 123, "phases": [{ "students": 123, "pages": 6, "pageCost": 0.08, "snacksQty": 0 }] }, { "name": "J", "students": 154, "phases": [{ "students": 154, "pages": 5, "pageCost": 0.08, "snacksQty": 0 }] }, { "name": "P", "students": 82, "phases": [{ "students": 92, "pages": 6, "pageCost": 0.08, "snacksQty": 0 }] }, { "name": "S", "students": 68, "phases": [{ "students": 68, "pages": 6, "pageCost": 0.08, "snacksQty": 0 }] }, { "name": "CERTIFICADOS", "students": 68, "phases": [{ "students": 68, "pages": 1, "pageCost": 0.15, "snacksQty": 0 }] }] } },
+            { "id": "id_1759331334023", "name": "OBA (Olimpíada Brasileira de Astronomia)", "students": 136, "costs": { "inscriptions": 0, "extraClasses": 0, "materials": 158.48000000000002, "travel": 0 }, "detailedBreakdown": { "general": { "professors": 0, "hours": 0, "hourRate": 0, "tickets": 0, "lodging": 0, "travelFood": 0 }, "materials": { "medalsCost": 60, "trophiesCost": 0 }, "levels": [{ "name": "1", "students": 19, "phases": [{ "students": 19, "pages": 7, "pageCost": 0.08, "snacksQty": 0 }] }, { "name": "2", "students": 18, "phases": [{ "students": 18, "pages": 8, "pageCost": 0.08, "snacksQty": 0 }] }, { "name": "3", "students": 57, "phases": [{ "students": 57, "pages": 9, "pageCost": 0.08, "snacksQty": 0 }] }, { "name": "4", "students": 49, "phases": [{ "students": 49, "pages": 9, "pageCost": 0.08, "snacksQty": 0 }] }] }, "totalCost": 158.48000000000002 },
+            { "id": "id_1759331475917", "name": "OBAFOG (Olimpíada Brasileira de Foguetes)", "students": 77, "costs": { "inscriptions": 0, "extraClasses": 0, "materials": 60, "travel": 1300 }, "totalCost": 1360, "detailedBreakdown": { "general": { "professors": 0, "hours": 0, "hourRate": 0, "tickets": 1300, "lodging": 0, "travelFood": 0 }, "materials": { "medalsCost": 60, "trophiesCost": 0 }, "levels": [{ "name": "", "students": 0, "phases": [{ "students": 0, "pages": 0, "pageCost": 0, "snacksQty": 0 }] }] } },
+            { "id": "id_1759331542504", "name": "OBB – Olimpíada Brasileira de Biologia", "students": 37, "costs": { "inscriptions": 0, "extraClasses": 0, "materials": 49.84, "travel": 0 }, "totalCost": 49.84, "detailedBreakdown": { "general": { "professors": 0, "hours": 0, "hourRate": 0, "tickets": 0, "lodging": 0, "travelFood": 0 }, "materials": { "medalsCost": 0, "trophiesCost": 0 }, "levels": [{ "name": "Fase 1", "students": 37, "phases": [{ "students": 37, "pages": 9, "pageCost": 0.08, "snacksQty": 0 }, { "students": 10, "pages": 29, "pageCost": 0.08, "snacksQty": 0 }] }] } },
+            { "id": "id_1759332181547", "name": "OBF – Olimpíada Brasileira de Física", "students": 44, "costs": { "inscriptions": 40, "extraClasses": 0, "materials": 440, "travel": 0 }, "totalCost": 480, "detailedBreakdown": { "general": { "professors": 0, "hours": 0, "hourRate": 0, "tickets": 0, "lodging": 0, "travelFood": 0 }, "materials": { "medalsCost": 0, "trophiesCost": 0 }, "levels": [{ "name": "Fase 2", "students": 20, "phases": [{ "students": 20, "pages": 1, "pageCost": 22, "snacksQty": 0 }] }] } },
+            { "id": "id_1760035742820", "name": "OBG – Olimpíada Brasileira de Geografia", "students": 48, "costs": { "inscriptions": 0, "extraClasses": 0, "materials": 0, "travel": 0 }, "inscriptionPeriod": "Não informado", "costType": "Não informado", "totalCost": 0 },
+            { "id": "id_1759333616408", "name": "OBMEP – Olimpíada Brasileira de Matemática das Escolas Públicas", "students": 519, "costs": { "inscriptions": 2295.75, "extraClasses": 0, "materials": 4.65, "travel": 0 }, "totalCost": 2300.4, "detailedBreakdown": { "general": { "professors": 0, "hours": 0, "hourRate": 0, "tickets": 0, "lodging": 0, "travelFood": 0 }, "materials": { "medalsCost": 0, "trophiesCost": 0 }, "levels": [{ "name": "CERTIFICADOS MIRIM 1", "students": 11, "phases": [{ "students": 11, "pages": 1, "pageCost": 0.15, "snacksQty": 0 }] }, { "name": "CERTIFICADOS MIRIM 1", "students": 20, "phases": [{ "students": 20, "pages": 1, "pageCost": 0.15, "snacksQty": 0 }] }] } },
+            { "id": "id_1759433656973", "name": "OBMEP MIRIM", "students": 186, "costs": { "inscriptions": 950, "extraClasses": 0, "materials": 0, "travel": 0 }, "totalCost": 950 },
+            { "id": "id_1759928123777", "name": "OBQJr – Olimpíada Brasileira de Química Júnior", "students": 23, "costs": { "inscriptions": 0, "extraClasses": 0, "materials": 12.64, "travel": 0 }, "detailedBreakdown": { "general": { "professors": 0, "hours": 0, "hourRate": 0, "tickets": 0, "lodging": 0, "travelFood": 0 }, "materials": { "medalsCost": 0, "trophiesCost": 0 }, "levels": [{ "name": "MODALIDADE A - 6º e 7º ano", "students": 13, "phases": [{ "students": 13, "pages": 6, "pageCost": 0.08, "snacksQty": 0 }] }, { "name": "MODALIDADE B - 8º e 9º ano", "students": 10, "phases": [{ "students": 10, "pages": 8, "pageCost": 0.08, "snacksQty": 0 }] }] }, "totalCost": 12.64 },
+            { "id": "id_1759930986992", "name": "OBR – Olimpíada Brasileira de Robótica", "students": 17, "costs": { "inscriptions": 0, "extraClasses": 0, "materials": 0, "travel": 0 }, "totalCost": 0 },
+            { "id": "id_1759926002604", "name": "Olimpíada de Português - OP BÊ-A-BÁ", "students": 226, "costs": { "inscriptions": 1300, "extraClasses": 0, "materials": 126.56, "travel": 0 }, "totalCost": 1426.56 },
+            { "id": "id_1759433919982", "name": "ONC – Olimpíada Nacional de Ciências", "students": 51, "costs": { "inscriptions": 0, "extraClasses": 0, "materials": 0, "travel": 0 }, "totalCost": 0 },
+            { "id": "id_1760038849215", "name": "ONEE – Olimpíada Nacional de Eficiência Energética ", "students": 15, "costs": { "inscriptions": 0, "extraClasses": 0, "materials": 0, "travel": 0 }, "inscriptionPeriod": "Não informado", "costType": "Não informado", "totalCost": 0 },
+            { "id": "id_1760033768424", "name": "ONHB – Olimpíada Nacional em História do Brasil ", "students": 48, "costs": { "inscriptions": 0, "extraClasses": 0, "materials": 160.32, "travel": 0 }, "inscriptionPeriod": "Não informado", "costType": "Não informado", "detailedBreakdown": { "general": { "professors": 0, "hours": 0, "hourRate": 0, "tickets": 0, "lodging": 0, "travelFood": 0 }, "materials": { "medalsCost": 0, "trophiesCost": 0 }, "levels": [{ "name": "FASE 1", "students": 48, "phases": [{ "students": 48, "pages": 28, "pageCost": 0.08, "snacksQty": 0 }] }, { "name": "FASE 4", "students": 30, "phases": [{ "students": 30, "pages": 22, "pageCost": 0.08, "snacksQty": 0 }] }] }, "totalCost": 160.32 },
+            { "id": "id_1760039656498", "name": "OP – Olimpíada de Português", "students": 100, "costs": { "inscriptions": 890, "extraClasses": 0, "materials": 0, "travel": 0 }, "inscriptionPeriod": "Não informado", "costType": "Não informado", "totalCost": 890 },
+            { "id": "id_1760037179976", "name": "The Big Challenge Brasil", "students": 515, "costs": { "inscriptions": 1000, "extraClasses": 0, "materials": 263.6, "travel": 0 }, "inscriptionPeriod": "Não informado", "costType": "Não informado", "detailedBreakdown": { "general": { "professors": 0, "hours": 0, "hourRate": 0, "tickets": 0, "lodging": 0, "travelFood": 0 }, "materials": { "medalsCost": 0, "trophiesCost": 0 }, "levels": [{ "name": "ENSINO MÉDIO", "students": 135, "phases": [{ "students": 135, "pages": 11, "pageCost": 0.08, "snacksQty": 0 }] }, { "name": "4º ano EF", "students": 48, "phases": [{ "students": 48, "pages": 10, "pageCost": 0.08, "snacksQty": 0 }] }, { "name": "5º ano EF", "students": 56, "phases": [{ "students": 56, "pages": 10, "pageCost": 0.08, "snacksQty": 0 }] }, { "name": "6º ano EF", "students": 52, "phases": [{ "students": 52, "pages": 0.08, "pageCost": 0, "snacksQty": 0 }] }, { "name": "7º ano EF", "students": 77, "phases": [{ "students": 77, "pages": 10, "pageCost": 0.08, "snacksQty": 0 }] }] } }
         ];
         // --- FIM DOS DADOS INICIAIS ---
 
@@ -302,7 +289,7 @@
             olympiadData = savedOlympiadData ? JSON.parse(savedOlympiadData) : JSON.parse(JSON.stringify(initialData));
 
             const savedUniqueStudents = localStorage.getItem('diocesanoUniqueStudents');
-            document.getElementById('unique-students-input').value = savedUniqueStudents || '';
+            document.getElementById('unique-students-input').value = savedUniqueStudents || initialUniqueStudents;
         };
         const saveData = () => {
             localStorage.setItem('diocesanoOlympiadCosts', JSON.stringify(olympiadData));
@@ -627,11 +614,6 @@
                 if (confirm('Você tem certeza que deseja apagar TODOS os dados customizados e restaurar os dados iniciais? Esta ação não pode ser desfeita.')) {
                     localStorage.removeItem('diocesanoOlympiadCosts');
                     localStorage.removeItem('diocesanoUniqueStudents');
-                    initialData.forEach(item => {
-                        item.students = item.students || 0;
-                    });
-                    olympiadData = JSON.parse(JSON.stringify(initialData));
-                    saveData();
                     location.reload();
                 }
             });
