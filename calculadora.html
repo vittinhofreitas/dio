@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,21 +8,18 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="shortcut icon" type="imagex/png"
-        href="https://www.diocesano.g12.br/wp-content/uploads/2024/02/cropped-favicon-diocesano-32x32.png">
+    <link rel="shortcut icon" type="imagex/png" href="https://www.diocesano.g12.br/wp-content/uploads/2024/02/cropped-favicon-diocesano-32x32.png">
     <style>
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f3f4f6;
         }
-
         .main-card {
             background-color: white;
             border-radius: 0.75rem;
             padding: 1.5rem;
             box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
         }
-
         .form-input {
             width: 100%;
             padding: 0.5rem;
@@ -32,7 +28,6 @@
             color: #111827;
             background-color: #f9fafb;
         }
-
         .form-label {
             display: block;
             font-size: 0.875rem;
@@ -40,12 +35,10 @@
             margin-bottom: 0.25rem;
             color: #374151;
         }
-
         .subtotal {
             font-weight: 600;
             color: #800000;
         }
-
         .btn {
             padding: 0.75rem 1.5rem;
             border-radius: 0.5rem;
@@ -53,34 +46,17 @@
             transition: background-color 0.2s;
             cursor: pointer;
         }
-
-        .btn-primary {
-            background-color: #800000;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background-color: #660000;
-        }
-
-        .btn-secondary {
-            background-color: #e5e7eb;
-            color: #1f2937;
-        }
-
-        .btn-secondary:hover {
-            background-color: #d1d5db;
-        }
-
-        .phase-block,
-        .level-card {
+        .btn-primary { background-color: #800000; color: white; }
+        .btn-primary:hover { background-color: #660000; }
+        .btn-secondary { background-color: #e5e7eb; color: #1f2937; }
+        .btn-secondary:hover { background-color: #d1d5db; }
+        .phase-block, .level-card {
             border: 1px solid #e5e7eb;
             border-radius: 0.5rem;
             padding: 1rem;
             margin-top: 1rem;
             position: relative;
         }
-
         .remove-btn {
             position: absolute;
             top: -10px;
@@ -97,72 +73,40 @@
             cursor: pointer;
             border: 2px solid white;
         }
-
         #toast {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
+            position: fixed; bottom: 20px; left: 50%;
             transform: translateX(-50%);
-            background-color: #22c55e;
-            color: white;
-            padding: 1rem 2rem;
-            border-radius: 0.5rem;
+            background-color: #22c55e; color: white;
+            padding: 1rem 2rem; border-radius: 0.5rem;
             box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
             opacity: 0;
             transition: opacity 0.5s, transform 0.5s;
             z-index: 100;
         }
-
         #toast.show {
             opacity: 1;
             transform: translate(-50%, -10px);
         }
     </style>
 </head>
-
 <body class="text-gray-800">
 
     <div class="container mx-auto p-4 md:p-8">
 
-        <header class="mb-10 flex flex-col sm:flex-row items-center justify-between px-4 py-3 border-b border-gray-200">
-            <!-- Logo à Esquerda -->
-            <div class="flex items-center justify-start w-full sm:w-auto">
-                <img src="https://www.diocesano.g12.br/wp-content/uploads/2023/12/logo-diocesano.png"
-                    alt="logo-diocesano" class="h-10 sm:h-12">
+         <header class="mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+            <div class="flex items-center gap-6">
+                <img src="https://www.diocesano.g12.br/wp-content/uploads/2023/12/logo-diocesano.png" alt="logo-diocesano" class="h-16">
+                 <div>
+                    <h1 class="text-3xl md:text-4xl font-bold text-[#800000]">Calculadora de Custos Detalhados</h1>
+                    <p class="text-lg text-gray-600">Analise os custos específicos de cada olimpíada.</p>
+                 </div>
             </div>
-
-            <div class="flex flex-col items-center text-center flex-grow">
-                <h1 class="text-2xl sm:text-3xl font-bold text-[#800000] leading-snug">
-                    Calculadora de Custos Detalhados
-                </h1>
-                <p class="text-sm sm:text-base text-gray-600">
-                    Analise os custos específicos de cada olimpíada.
-                </p>
-            </div>
-
-            <div class="flex flex-wrap justify-end gap-2 sm:gap-3 text-xs sm:text-sm w-full sm:w-auto mt-4 sm:mt-0">
-                <button id="import-details-btn"
-                    class="px-3 py-1.5 rounded-md border border-gray-400 text-gray-700 hover:bg-gray-100 transition">
-                    Importar
-                </button>
-                <input type="file" id="import-file" class="hidden" accept=".json">
-                <button id="export-details-btn"
-                    class="px-3 py-1.5 rounded-md border border-[#800000] text-[#800000] hover:bg-[#800000]/10 transition">
-                    Exportar
-                </button>
-                <a href="./index.html"
-                    class="px-3 py-1.5 rounded-md border border-gray-400 text-gray-700 hover:bg-gray-100 transition flex-shrink-0">
-                    &larr; Voltar
-                </a>
-            </div>
+            <a href="./painel_custos_olimpiadas.html" class="btn btn-secondary w-full sm:w-auto flex-shrink-0">&larr; Voltar ao Painel Principal</a>
         </header>
 
-
         <section class="main-card mb-8">
-            <label for="olympiad-select" class="form-label text-lg font-semibold">1. Selecione a Olimpíada para
-                Detalhar</label>
-            <select id="olympiad-select"
-                class="w-full p-3 text-lg border-gray-300 rounded-md focus:ring-[#800000] focus:border-[#800000]">
+            <label for="olympiad-select" class="form-label text-lg font-semibold">1. Selecione a Olimpíada para Detalhar</label>
+            <select id="olympiad-select" class="w-full p-3 text-lg border-gray-300 rounded-md focus:ring-[#800000] focus:border-[#800000]">
                 <option value="">-- Escolha uma olimpíada --</option>
             </select>
         </section>
@@ -171,7 +115,7 @@
             <section class="main-card mb-8">
                 <h2 class="text-2xl font-bold mb-4">2. Custos Gerais da Olimpíada</h2>
                 <div class="grid md:grid-cols-2 gap-8">
-
+                    
                     <div class="space-y-4 p-4 bg-gray-50 rounded-lg">
                         <h3 class="font-bold text-lg border-b pb-2">Pessoal (Aulas Extras)</h3>
                         <div>
@@ -199,7 +143,7 @@
                             <label for="lodging" class="form-label">Hospedagem (custo total R$)</label>
                             <input type="number" id="lodging" class="form-input" value="0" step="0.01">
                         </div>
-                        <div>
+                         <div>
                             <label for="travel-food" class="form-label">Alimentação (custo total R$)</label>
                             <input type="number" id="travel-food" class="form-input" value="0" step="0.01">
                         </div>
@@ -207,12 +151,11 @@
                     </div>
                 </div>
             </section>
-
+            
             <section class="main-card mb-8">
                 <div class="flex justify-between items-center">
                     <h2 class="text-2xl font-bold">3. Detalhe os Níveis e Materiais</h2>
-                    <button id="add-level-btn" class="btn btn-secondary text-sm py-1 px-3">[ + Adicionar Nível
-                        ]</button>
+                    <button id="add-level-btn" class="btn btn-secondary text-sm py-1 px-3">[ + Adicionar Nível ]</button>
                 </div>
                 <div id="levels-container" class="mt-4 space-y-6">
                     <!-- Níveis da calculadora aqui -->
@@ -231,23 +174,22 @@
                         </div>
                     </div>
                     <div class="mt-6 text-right">
-                        <p class="text-lg">Subtotal Materiais: <span id="subtotal-materials" class="subtotal">R$
-                                0,00</span></p>
-                    </div>
+                         <p class="text-lg">Subtotal Materiais: <span id="subtotal-materials" class="subtotal">R$ 0,00</span></p>
+                     </div>
                 </div>
             </section>
-
+            
             <section class="main-card">
-                <h2 class="text-2xl font-bold mb-4">4. Resumo e Sincronização</h2>
-                <div class="flex flex-wrap items-center justify-between gap-6 bg-gray-800 text-white p-6 rounded-lg">
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-300">Custo Total Detalhado para esta Olimpíada</h3>
-                        <p id="total-detailed-cost" class="text-4xl font-black">R$ 0,00</p>
-                    </div>
-                    <button id="save-to-dashboard" class="btn bg-green-600 hover:bg-green-700 text-lg">
+                 <h2 class="text-2xl font-bold mb-4">4. Resumo e Sincronização</h2>
+                 <div class="flex flex-wrap items-center justify-between gap-6 bg-gray-800 text-white p-6 rounded-lg">
+                     <div>
+                         <h3 class="text-lg font-semibold text-gray-300">Custo Total Detalhado para esta Olimpíada</h3>
+                         <p id="total-detailed-cost" class="text-4xl font-black">R$ 0,00</p>
+                     </div>
+                     <button id="save-to-dashboard" class="btn bg-green-600 hover:bg-green-700 text-lg">
                         Atualizar Dados no Painel Principal
-                    </button>
-                </div>
+                     </button>
+                 </div>
             </section>
         </div>
     </div>
@@ -255,113 +197,81 @@
     <div id="toast">Dados atualizados com sucesso!</div>
 
     <script>
+        // --- DADOS INICIAIS (ESPELHO DO PAINEL) ---
+        const initialData = [
+            { id: 'canguru', name: 'Olimpíada Canguru de Matemática', students: 150, costs: { inscriptions: 787.00, extraClasses: 1500, materials: 1614.28, travel: 0 } },
+            { id: 'oba', name: 'Olimpíada Brasileira de Astronomia (OBA)', students: 80, costs: { inscriptions: 0, extraClasses: 2500, materials: 800, travel: 0 } },
+            { id: 'obafog', name: 'Olimpíada Brasileira de Foguetes (OBAFOG)', students: 30, costs: { inscriptions: 0, extraClasses: 1000, materials: 1500, travel: 0 } },
+            { id: 'obr', name: 'Olimpíada Brasileira de Robótica (OBR)', students: 12, costs: { inscriptions: 600, extraClasses: 3000, materials: 2500, travel: 5000 } },
+            { id: 'obmep', name: 'Olimpíada Brasileira de Matemática (OBMEP)', students: 519, costs: { inscriptions: 2295.75, extraClasses: 4000, materials: 200, travel: 0 } },
+            { id: 'onc', name: 'Olimpíada Nacional de Ciências (ONC)', students: 60, costs: { inscriptions: 0, extraClasses: 2200, materials: 400, travel: 0 } },
+            { id: 'op', name: 'Olimpíada de Português (OP)', students: 100, costs: { inscriptions: 2190.00, extraClasses: 1800, materials: 150, travel: 0 } }, // (890+1300)
+            { id: 'obmep_mirim', name: 'Olimpíada Brasileira de Matemática Mirim', students: 186, costs: { inscriptions: 950.00, extraClasses: 1200, materials: 100, travel: 0 } },
+        ];
+        // --- FIM DOS DADOS INICIAIS ---
+
         let olympiadData = [];
         let selectedOlympiadId = null;
 
         const formatCurrency = (value) => (value || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-
+        
         const loadData = () => {
             const savedData = localStorage.getItem('diocesanoOlympiadCosts');
-            olympiadData = savedData ? JSON.parse(savedData) : [];
+            // MODIFICADO: Usa initialData como fallback, igual ao painel
+            olympiadData = savedData ? JSON.parse(savedData) : JSON.parse(JSON.stringify(initialData));
         };
 
         document.addEventListener('DOMContentLoaded', () => {
             loadData();
             populateSelect();
-
+            
             // Adicionado para ler o parâmetro da URL
             const urlParams = new URLSearchParams(window.location.search);
             const olympiadIdFromUrl = urlParams.get('id');
             if (olympiadIdFromUrl) {
                 const select = document.getElementById('olympiad-select');
-                // Verifica se a opção realmente existe antes de selecioná-la
                 if (select.querySelector(`option[value="${olympiadIdFromUrl}"]`)) {
                     select.value = olympiadIdFromUrl;
-                    select.dispatchEvent(new Event('change')); // Dispara o evento para carregar a calculadora
+                    select.dispatchEvent(new Event('change'));
                 }
             }
-
+            
             document.getElementById('olympiad-select').addEventListener('change', (e) => {
                 selectedOlympiadId = e.target.value;
-                if (selectedOlympiadId) {
+                if(selectedOlympiadId) {
                     document.getElementById('calculator-body').classList.remove('hidden');
                     loadCalculatorState();
                 } else {
                     document.getElementById('calculator-body').classList.add('hidden');
                 }
             });
-
-            // Re-delegar eventos para inputs que podem ser criados dinamicamente
+            
             document.getElementById('calculator-body').addEventListener('input', (e) => {
-                if (e.target.tagName === 'INPUT' && (e.target.type === 'number' || e.target.type === 'text')) {
+                if(e.target.tagName === 'INPUT' && (e.target.type === 'number' || e.target.type === 'text')) {
                     calculateAll();
                 }
             });
-
+            
             document.getElementById('add-level-btn').addEventListener('click', () => addLevelBlock());
             document.getElementById('save-to-dashboard').addEventListener('click', saveToDashboard);
-            document.getElementById('export-details-btn').addEventListener('click', exportDetails);
-
-            // Listeners de Importação
-            const importBtn = document.getElementById('import-details-btn');
-            const importFileInput = document.getElementById('import-file');
-
-            importBtn.addEventListener('click', () => {
-                if (!selectedOlympiadId) {
-                    importBtn.textContent = 'Selecione uma olimpíada';
-                    setTimeout(() => {
-                        importBtn.textContent = 'Importar Detalhes';
-                    }, 2500);
-                    return;
-                }
-                importFileInput.click();
-            });
-
-            importFileInput.addEventListener('change', (event) => {
-                const file = event.target.files[0];
-                if (!file || !selectedOlympiadId) return;
-
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    try {
-                        const importedBreakdown = JSON.parse(e.target.result);
-                        if (importedBreakdown && importedBreakdown.general && importedBreakdown.materials && importedBreakdown.levels) {
-                            const index = olympiadData.findIndex(o => o.id === selectedOlympiadId);
-                            if (index !== -1) {
-                                olympiadData[index].detailedBreakdown = importedBreakdown;
-                                localStorage.setItem('diocesanoOlympiadCosts', JSON.stringify(olympiadData));
-                                loadCalculatorState();
-                                showToast('Detalhes importados com sucesso!');
-                            }
-                        } else {
-                            throw new Error('Formato de arquivo de detalhes inválido.');
-                        }
-                    } catch (error) {
-                        console.error('Erro ao importar detalhes:', error);
-                        const importBtn = document.getElementById('import-details-btn');
-                        importBtn.textContent = 'Arquivo Inválido!';
-                        setTimeout(() => {
-                            importBtn.textContent = 'Importar Detalhes';
-                        }, 3000);
-                    } finally {
-                        importFileInput.value = '';
-                    }
-                };
-                reader.readAsText(file);
-            });
         });
-
+        
         const populateSelect = () => {
             const select = document.getElementById('olympiad-select');
-            select.innerHTML = '<option value="">-- Escolha uma olimpíada --</option>'; // Limpa antes de popular
-            olympiadData.sort((a, b) => a.name.localeCompare(b.name)).forEach(item => {
+            select.innerHTML = '<option value="">-- Escolha uma olimpíada --</option>';
+            // MODIFICADO: Verifica se olympiadData tem dados
+            if (!olympiadData || olympiadData.length === 0) {
+                 select.innerHTML = '<option value="" disabled>Nenhuma olimpíada encontrada. Importe dados no Painel Principal.</option>';
+                 return;
+            }
+            olympiadData.sort((a,b) => a.name.localeCompare(b.name)).forEach(item => {
                 const option = document.createElement('option');
                 option.value = item.id;
                 option.textContent = `${item.name} (${item.students} alunos)`;
                 select.appendChild(option);
             });
         };
-
+        
         const addLevelBlock = (levelData = null) => {
             const container = document.getElementById('levels-container');
             const levelCard = document.createElement('div');
@@ -387,20 +297,20 @@
                 e.target.closest('.level-card').remove();
                 calculateAll();
             });
-            levelCard.querySelector('.add-phase-btn').addEventListener('click', (e) => {
+             levelCard.querySelector('.add-phase-btn').addEventListener('click', (e) => {
                 const phasesContainer = e.target.previousElementSibling;
                 addPhaseBlock(phasesContainer);
             });
             levelCard.querySelectorAll('input').forEach(input => input.addEventListener('input', calculateAll));
-
+            
             const phasesContainer = levelCard.querySelector('.phases-container');
             if (levelData && levelData.phases) {
-                levelData.phases.forEach(phase => addPhaseBlock(phasesContainer, phase));
+                 levelData.phases.forEach(phase => addPhaseBlock(phasesContainer, phase));
             } else {
-                addPhaseBlock(phasesContainer);
+                 addPhaseBlock(phasesContainer);
             }
         };
-
+        
         const addPhaseBlock = (phasesContainer, phaseData = null) => {
             const phaseBlock = document.createElement('div');
             phaseBlock.className = 'phase-block';
@@ -435,13 +345,13 @@
 
         const calculateAll = () => {
             if (!selectedOlympiadId) return;
-
+            
             const professors = parseFloat(document.getElementById('professors').value) || 0;
             const hours = parseFloat(document.getElementById('hours').value) || 0;
             const hourRate = parseFloat(document.getElementById('hour-rate').value) || 0;
             const subtotalStaff = professors * hours * hourRate;
             document.getElementById('subtotal-staff').textContent = formatCurrency(subtotalStaff);
-
+            
             const subtotalMaterials = getMaterialsSubtotal();
             document.getElementById('subtotal-materials').textContent = formatCurrency(subtotalMaterials);
 
@@ -450,15 +360,15 @@
             const travelFood = parseFloat(document.getElementById('travel-food').value) || 0;
             const subtotalTravel = tickets + lodging + travelFood;
             document.getElementById('subtotal-travel').textContent = formatCurrency(subtotalTravel);
-
+            
             const selectedOlympiad = olympiadData.find(o => o.id === selectedOlympiadId);
             const inscriptionCost = (selectedOlympiad?.costs?.inscriptions) || 0;
             const totalCost = subtotalStaff + subtotalMaterials + subtotalTravel + inscriptionCost;
             document.getElementById('total-detailed-cost').textContent = formatCurrency(totalCost);
         };
-
+        
         const getMaterialsSubtotal = () => {
-            let totalMaterialsCost = 0;
+             let totalMaterialsCost = 0;
             document.querySelectorAll('.level-card').forEach(levelCard => {
                 levelCard.querySelectorAll('.phase-block').forEach(block => {
                     const students = parseFloat(block.querySelector('.phase-students').value) || 0;
@@ -469,13 +379,13 @@
                     totalMaterialsCost += (students * pages * pageCost) + (students * snacksQty * snackCost);
                 });
             });
-
+            
             const medalsCost = parseFloat(document.getElementById('medals-cost').value) || 0;
             const trophiesCost = parseFloat(document.getElementById('trophies-cost').value) || 0;
-
+            
             return totalMaterialsCost + medalsCost + trophiesCost;
         };
-
+        
         const buildDetailedBreakdown = () => {
             const breakdown = {
                 general: {
@@ -487,8 +397,8 @@
                     travelFood: parseFloat(document.getElementById('travel-food').value) || 0,
                 },
                 materials: {
-                    medalsCost: parseFloat(document.getElementById('medals-cost').value) || 0,
-                    trophiesCost: parseFloat(document.getElementById('trophies-cost').value) || 0,
+                     medalsCost: parseFloat(document.getElementById('medals-cost').value) || 0,
+                     trophiesCost: parseFloat(document.getElementById('trophies-cost').value) || 0,
                 },
                 levels: []
             };
@@ -541,70 +451,33 @@
             calculateAll();
         };
 
-        const exportDetails = () => {
-            const exportBtn = document.getElementById('export-details-btn');
-            if (!selectedOlympiadId) {
-                exportBtn.textContent = 'Selecione uma olimpíada';
-                setTimeout(() => {
-                    exportBtn.textContent = 'Exportar Detalhes';
-                }, 2000);
-                return;
-            }
-
-            const selectedOlympiad = olympiadData.find(o => o.id === selectedOlympiadId);
-            // Salva o estado atual antes de exportar para garantir que os dados mais recentes sejam exportados
-            const currentBreakdown = buildDetailedBreakdown();
-
-            if (!selectedOlympiad || !currentBreakdown) {
-                exportBtn.textContent = 'Nenhum detalhe para exportar';
-                setTimeout(() => {
-                    exportBtn.textContent = 'Exportar Detalhes';
-                }, 2000);
-                return;
-            }
-
-            const dataToExport = currentBreakdown;
-            const dataStr = JSON.stringify(dataToExport, null, 2);
-            const dataBlob = new Blob([dataStr], { type: 'application/json' });
-            const url = URL.createObjectURL(dataBlob);
-            const link = document.createElement('a');
-            link.href = url;
-            const safeFileName = selectedOlympiad.name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-            link.download = `detalhes_${safeFileName}_${new Date().toISOString().slice(0, 10)}.json`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-        };
-
         const saveToDashboard = () => {
             if (!selectedOlympiadId) return;
 
             const index = olympiadData.findIndex(o => o.id === selectedOlympiadId);
             if (index === -1) return;
-
+            
             const subtotalStaff = (parseFloat(document.getElementById('professors').value) || 0) * (parseFloat(document.getElementById('hours').value) || 0) * (parseFloat(document.getElementById('hour-rate').value) || 0);
             const subtotalMaterials = getMaterialsSubtotal();
             const subtotalTravel = (parseFloat(document.getElementById('tickets').value) || 0) + (parseFloat(document.getElementById('lodging').value) || 0) + (parseFloat(document.getElementById('travel-food').value) || 0);
-
+            
             olympiadData[index].costs.extraClasses = subtotalStaff;
             olympiadData[index].costs.materials = subtotalMaterials;
             olympiadData[index].costs.travel = subtotalTravel;
-
+            
             // Salva o detalhamento completo
             olympiadData[index].detailedBreakdown = buildDetailedBreakdown();
-
+            
             localStorage.setItem('diocesanoOlympiadCosts', JSON.stringify(olympiadData));
             showToast();
         };
 
-        const showToast = (message = 'Dados atualizados com sucesso!') => {
+        const showToast = () => {
             const toast = document.getElementById('toast');
-            toast.textContent = message;
             toast.classList.add('show');
             setTimeout(() => { toast.classList.remove('show'); }, 3000);
         };
     </script>
 </body>
-
 </html>
+
